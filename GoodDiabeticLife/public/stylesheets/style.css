@@ -1,0 +1,139 @@
+.box_login {
+    width: 40%;
+    border: 1px black solid;
+    padding: 1em;
+    text-align: center;
+    margin: auto;
+    height: 20em;
+    margin-top: 12em;
+    padding-top: 7em;
+    box-shadow: 0 0 10px 10px rgba(0, 0, 0, 0.374);
+}
+
+.box_session_log {
+    width: 40%;
+    border: 1px gray solid;
+    padding: 1em;
+    text-align: center;
+    margin: auto;
+    height: 28em;
+    margin-top: 10em;
+    box-shadow: 0 0 10px 10px rgba(0, 0, 0, 0.374);
+}
+
+.user_profile {
+    border: 1px gray solid;
+    width: 60%;
+    margin: auto;
+    box-shadow: 0 0 10px 6px rgba(0, 0, 0, 0.374);
+    padding: 1em;
+}
+
+.user_profile_1 {
+    border: 1px gray solid;
+    width: 50%;
+    margin: auto;
+    box-shadow: 0 0 10px 6px rgba(0, 0, 0, 0.374);
+    padding: 1em;
+}
+
+.format_input_user {
+    width: 100%;
+}
+
+.format_input {
+    width: 50%;
+}
+
+.password-input-container {
+    position: relative;
+    display: inline-block;
+}
+
+.show-password-btn {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+}
+
+.ingredients {
+    width: 60%;
+    height: 6em;
+}
+
+.box_main {
+    border: 1px gray solid;
+    width: 60%;
+    margin: auto;
+    background-color: white;
+    box-shadow: 0 0 10px 6px rgba(0, 0, 0, 0.374);
+}
+
+.cuerpo {
+    padding-top: 12em;
+}
+
+.box_information {
+    border: 1px gray solid;
+    width: 60%;
+    margin: auto;
+    box-shadow: 0 0 10px 6px rgba(0, 0, 0, 0.374);
+}
+
+.box_food {
+    border: 1px gray solid;
+    width: 50%;
+}
+
+.box_comment {
+    border: 1px gray solid;
+    width: 40%;
+    margin: auto;
+    box-shadow: 0 0 10px 6px rgba(0, 0, 0, 0.374);
+}
+
+.box_options {
+    border: 1px gray solid;
+    width: 70%;
+    margin: auto;
+    box-shadow: 0 0 10px 6px rgba(0, 0, 0, 0.374);
+}
+
+
+.format_textarea {
+    width: 50%;
+    height: 5em;
+}
+
+.header {
+    position: fixed;
+    background-color: white;
+    height: 10em;
+    z-index: 1000;
+}
+
+table {
+    border-collapse: collapse;
+    width: 50%;
+    margin: 20px auto;
+}
+
+th, td {
+    border: 1px solid black;
+    padding: 8px;
+    text-align: center;
+}
+
+.formato_enlace {
+    text-decoration: none;
+    color: black;
+}
+
+.formato_enlace:hover {
+    color: rgb(255, 193, 7);
+}
+
+.format_img {
+    border-radius: 50%;
+}

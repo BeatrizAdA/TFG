@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0" crossorigin="anonymous">
+        <link rel="stylesheet" href="/stylesheets/style.css" />
+        <link rel="icon" href="/images/favicon.PNG" />
+        <title>GoodDiabeticLife</title>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script>
+            function bloodSugarFunc() {
+                let blood_sugar = parseInt($("#blood_sugar").val());
+                let diabetes_treatment = $("#diabetes_treatment").val();
+                let blood_sugar_min = parseInt($("#blood_sugar_min").val());
+                let blood_sugar_max = parseInt($("#blood_sugar_max").val());
+                let option_blood_sugar = $("#option_blood_sugar").val();
+                let min_before_food = parseInt($("#min_before_food").val());
+                let max_before_food = parseInt($("#max_before_food").val());
+                let after_food = parseInt($("#after_food").val());
+                let min_before_sport = parseInt($("#min_before_sport").val());
+                let max_before_sport = parseInt($("#max_before_sport").val());
+                let medium_before_sport = parseInt($("#medium_before_sport").val());
+                $('#blood_sugar_modal').modal('show');
+                if(option_blood_sugar === "before_food"){
+                    if(blood_sugar < min_before_food){
+                        if(diabetes_treatment === "Bomba de insulina"){
+                            $("textarea").val("Tienes hipoglucemia, el valor mínimo antes de comer es " + min_before_food);
+                        } else if(diabetes_treatment === "Boligrafo de insulina"){
+                            $("textarea").val("Tienes hipoglucemia, el valor mínimo antes de comer es " + min_before_food);
+                        }
+                        else {
+                            $("textarea").val("Tienes hipoglucemia, el valor mínimo antes de comer es " + min_before_food);
+                        }
+                        $("#hyperglycemia").val(false);
+                        $("#hypoglycemia").val(true);
+                    } else if(blood_sugar > max_before_food){
+                        if(diabetes_treatment === "Bomba de insulina"){
+                            $("textarea").val("Tienes hiperglucemia, el valor máximo antes de comer es " + max_before_food + ". Se recomienda comprobar el mecanismo de la bomba por si hay algún problema.");
+                        } else if(diabetes_treatment === "Boligrafo de insulina"){
+                            $("textarea").val("Tienes hiperglucemia, el valor máximo antes de comer es " + max_before_food + ". Se recomienda administrar 1 unidad de insulina y volver a revisar la glucemia en 30 minutos.");
+                        }
+                        else {
+                            $("textarea").val("Tienes hiperglucemia, el valor máximo antes de comer es " + max_before_food);
+                        }
+                        $("#hyperglycemia").val(true);
+                        $("#hypoglycemia").val(false);
+                    } else {
+                        $("textarea").val("Estás entre los valores correctos para empezar a comer");
+                        $("#hyperglycemia").val(false);
+                        $("#hypoglycemia").val(false);
+                    }
+                } else if(option_blood_sugar === "after_food"){
+                    if(blood_sugar > after_food){
+                        if(diabetes_treatment === "Bomba de insulina"){
+                            $("textarea").val("Tienes hiperglucemia, el valor máximo depués de comer es " + after_food + ". Se recomienda comprobar el mecanismo de la bomba por si hay algún problema.");
+                        } else if(diabetes_treatment === "Boligrafo de insulina"){
+                            $("textarea").val("Tienes hiperglucemia, el valor máximo depués de comer es " + after_food + ". Se recomienda administrar 1 unidad de insulina y volver a revisar la glucemia en 30 minutos.");
+                        }
+                        else {
+                            $("textarea").val("Tienes hiperglucemia, el valor máximo antes de comer es " + max_before_food);
+                        }
+                        $("#hyperglycemia").val(true);
+                        $("#hypoglycemia").val(false);
+                    } else if(blood_sugar < blood_sugar_min){
+                        if(diabetes_treatment === "Bomba de insulina"){
+                            $("textarea").val("Tienes hipoglucemia. Se recomienda comer algo y volver a revisar la glucemia en 30 minutos.");
+                        } else if(diabetes_treatment === "Boligrafo de insulina"){
+                            $("textarea").val("Tienes hipoglucemia. Se recomienda comer algo y volver a revisar la glucemia en 30 minutos.");
+                        }
+                        else {
+                            $("textarea").val("Tienes hipoglucemia. Se recomienda comer algo y volver a revisar la glucemia en 30 minutos.");
+                        }
+                        $("#hyperglycemia").val(false);
+                        $("#hypoglycemia").val(true);
+                    } else {
+                        $("textarea").val("Estás entre los valores correctos después a comer");
+                        $("#hyperglycemia").val(false);
+                        $("#hypoglycemia").val(false);
+                    }
+                } else if(option_blood_sugar === "before_sport"){
+                    if(blood_sugar < min_before_sport){
+                        $("textarea").val("Tienes hipoglucemia, el valor mínimo antes de hacer deporte es " + min_before_sport + ". Se recomienda comer algo antes de realizar deporte.");
+                        $("#hyperglycemia").val(false);
+                        $("#hypoglycemia").val(true);
+                    } else if(blood_sugar > max_before_sport){
+                        $("textarea").val("Tienes hiperglucemia, el valor máximo antes de hacer deporte es " + max_before_sport + ". Se recomienda realizar una medición de cuerpos cetónicos.");
+                        $("#hyperglycemia").val(true);
+                        $("#hypoglycemia").val(false);
+                    } else if(blood_sugar > min_before_sport && blood_sugar < medium_before_sport){
+                        $("textarea").val("Si estás entre " + min_before_sport + " - " + medium_before_sport + ", se recomienda comer durante el deporte.");
+                        $("#hyperglycemia").val(false);
+                        $("#hypoglycemia").val(false);
+                    } else {
+                        $("textarea").val("Estás entre los valores correctos para realizar deporte.");
+                        $("#hyperglycemia").val(false);
+                        $("#hypoglycemia").val(false);
+                    }
+                } else {
+                    if(blood_sugar < blood_sugar_min){
+                        $("textarea").val("Tienes hipoglucemia. Se recomienda comer algo y volver a revisar la glucemia en 30 minutos.");
+                        $("#hyperglycemia").val(false);
+                        $("#hypoglycemia").val(true);
+                    } else if(blood_sugar > blood_sugar_max){
+                        if(diabetes_treatment === "Bomba de insulina"){
+                            $("textarea").val("Tienes hiperglucemia. . Se recomienda comprobar el mecanismo de la bomba por si hay algún problema.");
+                        } else if(diabetes_treatment === "Boligrafo de insulina"){
+                            $("textarea").val("Tienes hiperglucemia.");
+                        }
+                        else {
+                            $("textarea").val("Tienes hiperglucemia. . Se recomienda administrar 1 unidad de insulina y volver a revisar la glucemia en 30 minutos.");
+                        }
+                        $("#hyperglycemia").val(true);
+                        $("#hypoglycemia").val(false);
+                    } else {
+                        $("textarea").val("Estás entre los valores correctos");
+                        $("#hyperglycemia").val(false);
+                        $("#hypoglycemia").val(false);
+                    }
+                }
+            }
+        </script>
+    </head>
+    <body>
+        <div class="container-fluid">
+            <%- include("header") %>
+            <div class="cuerpo">
+                <div class="box_options">
+                    <div class="row mt-2">
+                        <div class="col-2 offset-5">
+                            <h2>Glucemia</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="box_options mt-4">
+                    <form method="POST" action="/main/new_blood_sugar">
+                        <div class="row mt-4 align-items-center justify-content-center">
+                            <div class="col col-12 text-center">
+                                <input type="text" placeholder="Glucemia" name="blood_sugar" id="blood_sugar">
+                            </div>
+                        </div>
+                        <div class="row mt-4 mb-3 align-items-center justify-content-center">
+                            <div class="col col-12 text-center">
+                                <button type="button" class="btn btn-warning" id="add" onclick="bloodSugarFunc()">Registrar glucemia</button>
+                                <input type="text" value="<%= user_data[0].diabetes_treatment %>" id="diabetes_treatment" style="display: none;">
+                                <input type="text" value="<%= user_data[0].blood_sugar_min %>" id="blood_sugar_min" style="display: none;">
+                                <input type="text" value="<%= user_data[0].blood_sugar_max %>" id="blood_sugar_max" style="display: none;">
+                                <input type="text" value="<%= option_blood_sugar %>" id="option_blood_sugar" name="option_blood_sugar" style="display: none;">
+                                <input type="text" value="<%= min_before_food %>" id="min_before_food" style="display: none;">
+                                <input type="text" value="<%= max_before_food %>" id="max_before_food" style="display: none;">
+                                <input type="text" value="<%= after_food %>" id="after_food" style="display: none;">
+                                <input type="text" value="<%= min_before_sport %>" id="min_before_sport" style="display: none;">
+                                <input type="text" value="<%= max_before_sport %>" id="max_before_sport" style="display: none;">
+                                <input type="text" value="<%= medium_before_sport %>" id="medium_before_sport" style="display: none;">
+                                <input type="text" id="hyperglycemia" name="hyperglycemia" style="display: none;">
+                                <input type="text" id="hypoglycemia" name="hypoglycemia" style="display: none;">
+                                <div class="modal fade" id="blood_sugar_modal" tabindex="-1" aria-labelledby="blood_sugar_modal_label" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered modal-lg">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h1 class="modal-title fs-5" id="blood_sugar_modal_label">Glucemia</h1>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <textarea class="format_textarea" disabled></textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                <button type="submit" class="btn btn-warning">Aceptar</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0" crossorigin="anonymous">
+        <link rel="stylesheet" href="/stylesheets/style.css" />
+        <link rel="icon" href="/images/favicon.PNG" />
+        <title>GoodDiabeticLife</title>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script>
+            function showFoodModal() {
+                let ingredient = $("#ingredient").val();
+                $.ajax({
+                    method: "GET",
+                    url: "/main/food",
+                        data: {
+                            ingredient: ingredient
+                        },
+                    success: function (data, textStatus, jqXHR) {
+                        console.log(textStatus);
+                        $("#ration_table").find("tr:gt(0)").remove();
+                        $("#ingredient_table").find("tr:gt(0)").remove();
+
+                        $('#food_modal').modal('show');
+
+                        if (data.ration_table && data.ration_table.length > 0) {
+                            data.ration_table.forEach(function (element) {
+                                $("#ration_table").append(
+                                    "<tr><td>" + element.ingredient + "</td><td>" + element.grams + "</td><td>" + element.carbohydrates + "</td><td><button type='button' class='btn btn-warning' onclick='useFood(" + element.id + ", \"ration_table\")'>Usar</button></td></tr>"
+                                );
+                            });
+                        }
+                       
+                        if (data.ingredient_table && data.ingredient_table.length > 0) {
+                            data.ingredient_table.forEach(function (element) {
+                                $("#ingredient_table").append(
+                                    "<tr><td>" + element.ingredient + "</td><td>" + element.grams + "</td><td>" + element.carbohydrates + "</td><td><button type='button' class='btn btn-warning' onclick='useFood(" + element.id_ingredient + ", \"ingredient_table\")'>Usar</button></td></tr>"
+                                );
+                            });
+                        }
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        alert("Se ha producido un error: " + errorThrown);
+                    }
+                });
+            }
+        </script>
+        <script>
+            function useFood(id, table) {
+                $.ajax({
+                    method: "GET",
+                    url: "/main/food_id",
+                        data: {
+                            id: id,
+                            table: table
+                        },
+                    success: function (data, textStatus, jqXHR) {
+                        console.log(textStatus);
+                        
+                        let ingredient = data.id_table[0].ingredient;
+                        let grams = data.id_table[0].grams;
+                        let carbohydrates = data.id_table[0].carbohydrates;
+
+                        let quantity = parseInt($("#quantity").val());
+                        let unit = $("input[name='unit']:checked").val();
+                        $("#ingredients").append(quantity + unit + " " + ingredient + "\n");
+                        $("#ingredients1").append(quantity + unit + " " + ingredient + "\n");
+                        if($("#total_carbohydrates").val() === ""){
+                            $("#total_carbohydrates").val(0);
+                            $("#total_carbohydrates1").val(0);
+                        }
+                        let total_carbohydrates = parseFloat($("#total_carbohydrates").val());
+                        let aux = (quantity*carbohydrates)/grams;
+                        let total = total_carbohydrates + aux;
+                        $("#total_carbohydrates").val(total.toFixed(1));
+                        $("#total_carbohydrates1").val(total.toFixed(1));
+                        $("#ingredient").val("");
+                        $("#quantity").val("");
+                        $('#food_modal').modal('hide');
+
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        alert("Se ha producido un error: " + errorThrown);
+                    }
+                });
+            }
+        </script>
+        <script>
+            function addIngredient() {
+                let ingredient = $("#ingredient").val();
+                let carbohydrates_modal = $("#carbohydrates_modal").val();
+                let grams_modal = $("#grams_modal").val();
+                $.ajax({
+                    method: "POST",
+                    url: "/main/food",
+                        data: {
+                            ingredient: ingredient,
+                            carbohydrates_modal: carbohydrates_modal,
+                            grams_modal: grams_modal
+                        },
+                    success: function (data, textStatus, jqXHR) {
+                        console.log(textStatus);
+            
+                        let quantity = parseInt($("#quantity").val());
+                        let unit = $("input[name='unit']:checked").val();
+                        $("#ingredients").append(quantity + unit + " " + ingredient + "\n");
+                        $("#ingredients1").append(quantity + unit + " " + ingredient + "\n");
+                        if($("#total_carbohydrates").val() === ""){
+                            $("#total_carbohydrates").val(0);
+                            $("#total_carbohydrates1").val(0);
+                        }
+                        let total_carbohydrates = parseFloat($("#total_carbohydrates").val());
+                        let aux = (quantity*carbohydrates_modal)/grams_modal;
+                        let total = total_carbohydrates + aux;
+                        $("#total_carbohydrates").val(total.toFixed(1));
+                        $("#total_carbohydrates1").val(total.toFixed(1));
+                        $("#ingredient").val("");
+                        $("#quantity").val("");
+                        $("#carbohydrates_modal").val("");
+                        $("#grams_modal").val("");
+                        $('#add_food_modal').modal('hide');
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        alert("Se ha producido un error: " + errorThrown);
+                    }
+                });
+            }
+        </script>
+        <script>
+            function foodFunc() {
+                let option_food = $("#option_food").val();
+                let total_carbohydrates = parseFloat($("#total_carbohydrates").val());
+                let breakfast_quantity = parseFloat($("#breakfast_quantity").val());
+                let lunch_quantity = parseFloat($("#lunch_quantity").val());
+                let dinner_quantity = parseFloat($("#dinner_quantity").val());
+                let ratio = $("#ratio").val();
+                let insulin = ((1*total_carbohydrates)/ratio).toFixed(1);
+                $("#insulin").val(insulin);
+                $('#food_func_modal').modal('show');
+                if(option_food === "breakfast"){
+                    if(total_carbohydrates < breakfast_quantity){
+                        $("#text_food").val("No has llegado a los carbohidratos del desayuno. Tienes que administrarte " + insulin);
+                    }
+                    else if(total_carbohydrates > breakfast_quantity){
+                        $("#text_food").val("Te has pasado de los carbohidratos del desayuno. Tienes que administrarte " + insulin);
+                    }
+                    else {
+                        $("#text_food").val("Has llegado a los carbohidratos del desayuno. Tienes que administrarte " + insulin);
+                    }
+                }
+                else if(option_food === "lunch"){
+                    if(total_carbohydrates < lunch_quantity){
+                        $("#text_food").val("No has llegado a los carbohidratos de la comida. Tienes que administrarte " + insulin);
+                    }
+                    else if(total_carbohydrates > lunch_quantity){
+                        $("#text_food").val("Te has pasado de los carbohidratos de la comida. Tienes que administrarte " + insulin);
+                    }
+                    else {
+                        $("#text_food").val("Has llegado a los carbohidratos de la comida. Tienes que administrarte " + insulin);
+                    }
+                }
+                else if(option_food === "dinner"){
+                    if(total_carbohydrates < dinner_quantity){
+                        $("#text_food").val("No has llegado a los carbohidratos de la cena. Tienes que administrarte " + insulin);
+                    }
+                    else if(total_carbohydrates > dinner_quantity){
+                        $("#text_food").val("Te has pasado de los carbohidratos de la cena. Tienes que administrarte " + insulin);
+                    }
+                    else {
+                        $("#text_food").val("Has llegado a los carbohidratos de la cena. Tienes que administrarte " + insulin);
+                    }
+                }
+            }
+        </script>
+        <script>
+            function closeModal(){
+                $('#food_modal').modal('hide');
+                $('#add_food_modal').modal('show');
+            }
+        </script>
+    </head>
+    <body>
+        <div class="container-fluid">
+            <%- include("header") %>
+            <div class="cuerpo">
+                <div class="box_options">
+                    <div class="row mt-2">
+                        <div class="col-2 offset-5">
+                            <h2>Comidas</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="box_options mt-4">
+                    <form method="POST" action="/main/new_food">
+                        <div class="row mt-3 align-items-center justify-content-center">
+                            <div class="col col-12 text-center">
+                                <input type="text" placeholder="Comida" id="ingredient" name="ingredient">
+                                <input type="text" placeholder="Cantidad" id="quantity" name="quantity">
+                                <input type="radio" class="btn-check" name="unit" value="g" id="g" autocomplete="off">
+                                <label class="btn btn-outline-secondary" for="g">g</label>
+                                <input type="radio" class="btn-check" name="unit" value="ml" id="ml" autocomplete="off">
+                                <label class="btn btn-outline-secondary" for="ml">ml</label>
+                                <button type="button" class="btn btn-warning" id="add" onclick="showFoodModal()">Añadir</button>
+                            </div>
+                            <div class="col">
+                                <div class="modal fade" id="food_modal" tabindex="-1" aria-labelledby="food_modal_label" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered modal-lg">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h1 class="modal-title fs-5" id="food_modal_label">Comida</h1>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="row align-items-center justify-content-center">
+                                                    <div class="col text-center">
+                                                        <h4>Tabla de raciones</h4>
+                                                        <table id="ration_table">
+                                                            <tr>
+                                                                <th>Comida</th>
+                                                                <th>Gramos</th>
+                                                                <th>Carbohidratos</th>
+                                                            </tr>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                                <div class="row align-items-center justify-content-center">
+                                                    <div class="col text-center">
+                                                        <h4>Tabla de comidas</h4>
+                                                        <table id="ingredient_table">
+                                                            <tr>
+                                                                <th>Comida</th>
+                                                                <th>Gramos</th>
+                                                                <th>Carbohidratos</th>
+                                                            </tr>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                                <div class="row align-items-center justify-content-center">
+                                                    <div class="col text-center">
+                                                        <button type="button" class="btn btn-warning" onclick="closeModal()">Registrar nuevo</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal fade" id="add_food_modal" tabindex="-1" aria-labelledby="add_food_modal_label" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered modal-lg">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h1 class="modal-title fs-5" id="add_food_modal_label">Nueva comida</h1>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="row align-items-center justify-content-center">
+                                                    <div class="col text-center">
+                                                        <h5>Indica los datos de la etiqueta de la comida</h5>
+                                                    </div>
+                                                </div>
+                                                <div class="row align-items-center justify-content-center">
+                                                    <div class="col text-center">
+                                                        <input type="text" placeholder="Carbohidratos" id="carbohydrates_modal" name="carbohydrates_modal">
+                                                        <input type="text" placeholder="Cantidad" id="grams_modal" name="grams_modal">
+                                                        <input type="radio" class="btn-check" name="unit_m" value="g" id="g_m" autocomplete="off">
+                                                        <label class="btn btn-outline-secondary" for="g_m">g</label>
+                                                        <input type="radio" class="btn-check" name="unit_m" value="ml" id="ml_m" autocomplete="off">
+                                                        <label class="btn btn-outline-secondary" for="ml_m">ml</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                <button type="button" class="btn btn-warning" onclick="addIngredient()">Aceptar</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-4 align-items-center justify-content-center">
+                            <div class="col text-center">
+                                <textarea name="ingredients1" class="ingredients" id="ingredients1" disabled></textarea>
+                                <textarea name="ingredients" class="ingredients" id="ingredients" style="display: none;"></textarea>
+                            </div>
+                        </div>
+                        <div class="row mt-1 align-items-center justify-content-center">
+                            <div class="col text-center">
+                                <label>Carbohidratos totales</label>
+                                <input type="text" id="total_carbohydrates1" name="total_carbohydrates1" disabled>
+                                <input type="text" id="total_carbohydrates" name="total_carbohydrates" style="display: none;">
+                            </div>
+                        </div>
+                        <div class="row mt-4 mb-3 align-items-center justify-content-center">
+                            <div class="col-2 text-center">
+                                <button type="button" class="btn btn-warning" onclick="foodFunc()">Registrar comida</button>
+                                <input type="text" value="<%= option_food %>" id="option_food" name="option_food" style="display: none;">
+                                <input type="text" value="<%= user_data[0].breakfast_quantity %>" id="breakfast_quantity" style="display: none;">
+                                <input type="text" value="<%= user_data[0].lunch_quantity %>" id="lunch_quantity" style="display: none;">
+                                <input type="text" value="<%= user_data[0].dinner_quantity %>" id="dinner_quantity" style="display: none;">
+                                <input type="text" value="<%= user_data[0].ratio %>" id="ratio" style="display: none;">
+                                <input type="text" id="insulin" name="insulin" style="display: none;">
+                                <div class="modal fade" id="food_func_modal" tabindex="-1" aria-labelledby="food_func_modal_label" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered modal-lg">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h1 class="modal-title fs-5" id="food_func_modal_label">Comida</h1>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <textarea id="text_food" class="format_textarea" disabled></textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                <button type="submit" class="btn btn-warning">Aceptar</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

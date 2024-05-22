@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0" crossorigin="anonymous">
+        <link rel="stylesheet" href="/stylesheets/style.css" />
+        <link rel="icon" href="/images/favicon.PNG" />
+        <title>GoodDiabeticLife</title>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script>
+            function commentFunc() {
+                $("#comment").show();
+                $("#button_comment").show();
+                $("#add_comment").hide();   
+            }
+        </script>
+    </head>
+    <body>
+        <div class="container-fluid">
+            <%- include("header") %>
+            <div class="cuerpo">
+                <div class="box_information">
+                    <div class="row mt-2 align-items-center justify-content-center">
+                        <div class="col col-10 text-center">
+                            <h2><%= information[0].date %></h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="box_information mt-4 mb-5">
+                    <div class="row m-3 align-items-center justify-content-center">
+                        <div class="col col-12 text-end">
+                            <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#information_modal">
+                                Gráfica
+                            </button>
+                        </div>
+                    </div>
+                    <% information.forEach(element => { %>
+                        <div class="row m-3 align-items-center justify-content-center">
+                            <div class="col col-3 text-center">
+                                <h5><%= element.hour %></h5>
+                            </div>
+                            <div class="col col-9">
+                                <% if(element.option_food !== undefined) { %>
+                                    <div class="row">
+                                        <div class="col offset-1">
+                                            <% if(element.option_food === "breakfast") { %>
+                                                <h5><b>DESAYUNO</b></h5>
+                                            <% } else if (element.option_food === "lunch") { %>
+                                                <h5><b> COMIDA</b></h5>
+                                            <% } else if (element.option_food === "dinner" ) { %>
+                                                <h5><b> CENA</b></h5>
+                                            <% } else { %>
+                                                <h5><b>OTRA COMIDA</b></h5>
+                                            <% } %>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col offset-1">
+                                            <div class="box_food p-2">
+                                                <%- element.ingredients.replace(/\r?\n/g, '<br>') %>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col offset-1">
+                                            <label>Carbohidratos totales:</label>
+                                            <%= element.total_carbohydrates %>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col offset-1">
+                                            <label>Insulina administrada:</label>
+                                            <%= element.insulin %>
+                                        </div>
+                                    </div>
+                                <% } else if(element.option_blood_sugar !== undefined) { %>
+                                    <input type="text" value="<%= JSON.stringify(graphic) %>" id="graphic" style="display: none;">
+                                    <div class="row">
+                                        <div class="col offset-1">
+                                            <h5><b>GLUCEMIA</b></h5>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col offset-1">
+                                                <%= element.blood_sugar %>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <% } else { %>
+                                    <div class="row">
+                                        <div class="col offset-1">
+                                            <h5><b>DEPORTE</b></h5>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col offset-1">
+                                            <%= element.type_sport %>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col offset-1">
+                                            <label>Tiempo:</label>
+                                            <%= element.sport_time %> minutos
+                                        </div>
+                                    </div>
+                                <% } %>
+                            </div>
+                        </div>
+                    <% }); %>
+                </div>
+                <% if(information[0].comment){ %>
+                    <div class="box_comment mt-1 mb-5">
+                        <div class="row mt-3 mb-3">
+                            <div class="col offset-1">
+                                <%= information[0].comment %>
+                            </div>
+                        </div>
+                    </div>
+                <% } %>
+                <% if(user_data[0].is_doctor){ %>
+                    <% if(!information[0].comment){ %>
+                        <form  method="POST" action="/main/information/<%= information[0].id %>">
+                            <div class="row mt-5">
+                                <div class="col offset-5">
+                                    <button type="button" class="btn btn-warning" id="add_comment" onclick="commentFunc()">Añadir comentario</button>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col offset-4">
+                                    <textarea id="comment" name="comment" class="format_textarea" style="display: none;"></textarea>
+                                </div>
+                            </div>
+                            <div class="row mt-3 mb-4">
+                                <div class="col offset-5">
+                                    <button type="submit" class="btn btn-warning" id="button_comment" style="display: none;">Registrar comentario</button>
+                                </div>
+                            </div>
+                        </form>
+                    <% } %>
+                <% } %>
+                <div class="modal fade" id="information_modal" tabindex="-1" aria-labelledby="information_modal_label" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="information_modal_label">Glucemia</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <canvas id="myChart" width="400" height="300"></canvas>
+
+                                <script>
+                                    let graphic = $("#graphic").val();
+                            
+                                    let graphicData = JSON.parse(graphic);
+            
+                                    const registrosGlucemia = graphicData;
+
+                                    const horas = registrosGlucemia.map(registro => registro.hour);
+                                    const valoresGlucemia = registrosGlucemia.map(registro => registro.blood_sugar);
+
+                                    const ctx = document.getElementById('myChart').getContext('2d');
+                                    const myChart = new Chart(ctx, {
+                                        type: 'line',
+                                        data: {
+                                            labels: horas,
+                                            datasets: [{
+                                                label: 'Glucemia',
+                                                data: valoresGlucemia,
+                                                borderColor: 'rgb(75, 192, 192)',
+                                                tension: 0.1,
+                                                fill: false
+                                            }]
+                                        },
+                                        options: {
+                                            scales: {
+                                                y: {
+                                                    beginAtZero: true
+                                                }
+                                            }
+                                        }
+                                    });
+                                </script>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

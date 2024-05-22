@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0" crossorigin="anonymous">
+        <link rel="stylesheet" href="/stylesheets/style.css" />
+        <link rel="icon" href="/images/favicon.PNG" />
+        <title>GoodDiabeticLife</title>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script>
+            function showPassword(){
+                let password = document.getElementById("input_password");
+                if(password.type == "password"){
+                    password.type = "text";
+                }else{
+                    password.type = "password";
+                }
+            }
+        </script>
+        <script>
+            function changeData(){
+                let weight = document.getElementById("input_weight");
+                let type_diabetes = document.getElementById("input_type_diabetes");
+                let diabetes_treatment = document.getElementById("input_diabetes_treatment");
+                let blood_sugar_min = document.getElementById("input_blood_sugar_min");
+                let blood_sugar_max = document.getElementById("input_blood_sugar_max");
+                let breakfast_quantity = document.getElementById("input_breakfast_quantity");
+                let lunch_quantity = document.getElementById("input_lunch_quantity");
+                let dinner_quantity = document.getElementById("input_dinner_quantity");
+                let ratio = document.getElementById("input_ratio");
+                weight.disabled = false;
+                type_diabetes.disabled = false;
+                diabetes_treatment.disabled = false;
+                blood_sugar_min.disabled = false;
+                blood_sugar_max.disabled = false;
+                breakfast_quantity.disabled = false;
+                lunch_quantity.disabled = false;
+                dinner_quantity.disabled = false;
+                ratio.disabled = false;
+                $("#button_register").show();
+                $("#button_modify").hide();  
+            }
+        </script>
+    </head>
+    <body>
+        <div class="container-fluid">
+            <%- include("header") %>
+            <div class="cuerpo">
+                <form method="POST" action="/user_profile">
+                    <div class="user_profile_1">
+                        <div class="row align-items-center justify-content-center">
+                            <div class="col col-3">
+                                <img src="/image/<%=user_data[0].id%>" width="50%" class="format_img">
+                            </div>
+                            <div class="col col-9">
+                                <div class="row mt-2 align-items-center justify-content-center">
+                                    <div class="col col-lg-2 col-md-2 col-sm-12">
+                                        <label for="input_name">Nombre</label>
+                                    </div>
+                                    <div class="col">
+                                        <input type="text" value="<%=user_data[0].full_name%>" id="input_name" name="full_name" class="form-control format_input_user" disabled>
+                                    </div>
+                                </div>
+                                <div class="row mt-2 align-items-center justify-content-center">
+                                    <div class="col col-lg-2 col-md-2 col-sm-12">
+                                        <label for="input_email">Email</label>
+                                    </div>
+                                    <div class="col">
+                                        <input type="text" value="<%=user_data[0].email%>" id="input_email" name="email" class="form-control format_input_user" disabled>
+                                    </div>
+                                </div>
+                                <div class="row mt-2 mb-2 align-items-center justify-content-center">
+                                    <div class="col col-lg-2 col-md-12 col-sm-12">
+                                        <label for="input_password">Contraseña</label>
+                                    </div>
+                                    <div class="col password-input-container">
+                                        <input type="password" value="<%=user_data[0].password%>" id="input_password" name="password" class="form-control format_input_user" disabled>
+                                        <button class="btn show-password-btn" type="button" onclick="showPassword()">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16">
+                                                <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5s-3.879-1.168-5.168-2.457A13 13 0 0 1 1.172 8z"/>
+                                                <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0"/>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <% if(!user_data[0].is_doctor){ %>
+                    <form method="POST" action="/data_profile">
+                        <div class="user_profile mt-5 mb-5">
+                            <div class="row mt-2 align-items-center justify-content-center">
+                                <div class="col col-lg-2 col-md-2 col-sm-2">
+                                    <label for="input_weight">Peso</label>
+                                </div>
+                                <div class="col col-lg-10 col-md-10 col-sm-10">
+                                    <input type="text" value="<%=user_data[0].weight%>" id="input_weight" name="weight" class="form-control format_input" disabled>
+                                </div>
+                            </div>
+                            <div class="row mt-2 align-items-center justify-content-center">
+                                <div class="col col-lg-2 col-md-2 col-sm-12">
+                                    <label for="input_type_diabetes">Tipo de diabetes</label>
+                                </div>
+                                <div class="col col-lg-10 col-md-10 col-sm-12">
+                                    <select name="type_diabetes" id="input_type_diabetes" class="form-control format_input" disabled>
+                                        <% if(user_data[0].type_diabetes === "Tipo 1"){ %>
+                                            <option value=""></option>
+                                            <option value="Tipo 1" selected>Tipo 1</option>
+                                            <option value="Tipo 2">Tipo 2</option>
+                                        <% } else if(user_data[0].type_diabetes === "Tipo 2"){ %>
+                                            <option value=""></option>
+                                            <option value="Tipo 1">Tipo 1</option>
+                                            <option value="Tipo 2" selected>Tipo 2</option>
+                                        <% } else {%>
+                                            <option value="" selected></option>
+                                            <option value="Tipo 1">Tipo 1</option>
+                                            <option value="Tipo 2">Tipo 2</option>
+                                        <% }%>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row mt-2 align-items-center justify-content-center">
+                                <div class="col col-lg-2 col-md-12 col-sm-12">
+                                    <label for="input_diabetes_treatment">Tratamiento de diabetes</label>
+                                </div>
+                                <div class="co col-lg-10 col-md-12 col-sm-12">
+                                    <select name="diabetes_treatment" id="input_diabetes_treatment" class="form-control format_input" disabled>
+                                        <% if(user_data[0].diabetes_treatment === "Bomba de insulina"){ %>
+                                            <option value=""></option>
+                                            <option value="Bomba de insulina" selected>Bomba de insulina</option>
+                                            <option value="Boligrafo de insulina">Bolígrafo de insulina</option>
+                                        <% } else if(user_data[0].diabetes_treatment === "Boligrafo de insulina"){ %>
+                                            <option value=""></option>
+                                            <option value="Bomba de insulina">Bomba de insulina</option>
+                                            <option value="Boligrafo de insulina" selected>Bolígrafo de insulina</option>
+                                        <% } else {%>
+                                            <option value="" selected></option>
+                                            <option value="Bomba de insulina">Bomba de insulina</option>
+                                            <option value="Boligrafo de insulina">Bolígrafo de insulina</option>
+                                        <% }%>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row mt-2 align-items-center justify-content-center">
+                                <div class="col col-lg-2 col-md-2 col-sm-12">
+                                    <label for="input_blood_sugar_min">Glucemia mínima</label>
+                                </div>
+                                <div class="col col-lg-10 col-md-10 col-sm-12">
+                                    <input type="text" value="<%=user_data[0].blood_sugar_min%>" id="input_blood_sugar_min" name="blood_sugar_min" class="form-control format_input" disabled>
+                                </div>
+                            </div>
+                            <div class="row mt-2 align-items-center justify-content-center">
+                                <div class="col col-lg-2 col-md-2 col-sm-12">
+                                    <label for="input_blood_sugar_max">Glucemia máxima</label>
+                                </div>
+                                <div class="col col-lg-10 col-md-10 col-sm-12">
+                                    <input type="text" value="<%=user_data[0].blood_sugar_max%>" id="input_blood_sugar_max" name="blood_sugar_max" class="form-control format_input" disabled>
+                                </div>
+                            </div>
+                            <div class="row mt-2 align-items-center justify-content-center">
+                                <div class="col col-lg-2 col-md-2 col-sm-12">
+                                    <label for="input_breakfast_quantity">Desayuno</label>
+                                </div>
+                                <div class="col col-lg-10 col-md-10 col-sm-12">
+                                    <input type="text" value="<%=user_data[0].breakfast_quantity%>" id="input_breakfast_quantity" name="breakfast_quantity" class="form-control format_input" disabled>
+                                </div>
+                            </div>
+                            <div class="row mt-2 align-items-center justify-content-center">
+                                <div class="col col-lg-2 col-md-2 col-sm-12">
+                                    <label for="input_lunch_quantity">Comida</label>
+                                </div>
+                                <div class="col col-lg-10 col-md-10 col-sm-12">
+                                    <input type="text" value="<%=user_data[0].lunch_quantity%>" id="input_lunch_quantity" name="lunch_quantity" class="form-control format_input" disabled>
+                                </div>
+                            </div>
+                            <div class="row mt-2 align-items-center justify-content-center">
+                                <div class="col col-lg-2 col-md-2 col-sm-2">
+                                    <label for="input_dinner_quantity">Cena</label>
+                                </div>
+                                <div class="col col-lg-10 col-md-10 col-sm-10">
+                                    <input type="text" value="<%=user_data[0].dinner_quantity%>" id="input_dinner_quantity" name="dinner_quantity" class="form-control format_input" disabled>
+                                </div>
+                            </div>
+                            <div class="row mt-2 align-items-center justify-content-center">
+                                <div class="col col-lg-2 col-md-12 col-sm-12">
+                                    <label for="input_ratio">Ratio insulina (1 unidad)</label>
+                                </div>
+                                <div class="col col-lg-10 col-md-12 col-sm-12">
+                                    <input type="text" value="<%=user_data[0].ratio%>" id="input_ratio" name="ratio" class="form-control format_input" disabled>
+                                </div>
+                            </div>
+                            <div class="row mt-2 align-items-center justify-content-center">
+                                <div class="col col-12 text-center">
+                                    <button type="button" class="btn btn-warning" id="button_modify" onclick="changeData()">Modificar</button>
+                                </div>
+                                <div class="col col-12 text-center">
+                                    <button type="submit" class="btn btn-warning" id="button_register" style="display: none;">Registrar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                <% } %>
+            </div>
+        </div>
+    </body>
+</html>

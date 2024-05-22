@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0" crossorigin="anonymous">
+        <link rel="stylesheet" href="/stylesheets/style.css" />
+        <link rel="icon" href="/images/favicon.PNG" />
+        <title>GoodDiabeticLife</title>
+    </head>
+    <body>
+        <div class="container-fluid">
+            <%- include("header") %>
+            <div class="cuerpo">
+                <div class="box_options">
+                    <div class="row mt-2">
+                        <div class="col-2 offset-5">
+                            <h2>Deporte</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="box_options mt-4">
+                    <form method="POST" action="/main/new_sport">
+                        <div class="row mt-4 align-items-center justify-content-center">
+                            <div class="col col-12 text-center">
+                                <input type="text" placeholder="Ejercicio" name="type_sport">
+                                <input type="text" placeholder="Tiempo en minutos" name="sport_time">
+                            </div>
+                        </div>
+                        <div class="row mt-4 mb-3 align-items-center justify-content-center">
+                            <div class="col col-12 text-center">
+                                <button type="submit" class="btn btn-warning">Registrar deporte</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
